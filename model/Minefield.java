@@ -9,8 +9,9 @@ public class Minefield {
 	int[][] field;
 	boolean[][] visibilityMask;
 	int discoveredArea;
+	int firstX,firstY;	//first move location
 	//toDo, array of points to know where is each mine
-	
+
 	public Minefield(int n, int m,int mines)
 	{
 		this.n = n;
@@ -28,7 +29,7 @@ public class Minefield {
 	
 	private void init()
 	{
-		fillRandom();
+		fillRandom(firstX,firstY);
 		calculateValues();
 	}
 	
@@ -59,18 +60,29 @@ public class Minefield {
 		field[x][y] = value;
 	}
 
-	private void fillRandom() {
+	private void fillRandom(int x, int y) {
+		resetField();
 		Random random = new Random();
 		for(int i = 0; i < minesNr;)
 		{
 			int rndN = random.nextInt(n);
 			int rndM = random.nextInt(m);
-			if(field[rndN][rndM] != -1)
+			if((rndN != firstX || rndM != firstY) && field[rndN][rndM] != -1)
 			{
 				field[rndN][rndM] = -1;
 				i++;
 			}
 		}	
+	}
+
+	private void resetField() {
+		for(int i =0; i<n;i++)
+		{
+			for(int j=0;j<m;j++)
+			{
+				field[i][j] = 0;
+			}
+		}
 	}
 
 	public void print()
@@ -147,5 +159,11 @@ public class Minefield {
 
 	public boolean[][] getVisibilityMask() {
 		return visibilityMask;
+	}
+
+	public void setFirstLocation(int firstX, int firstY) {
+		this.firstX = firstX;
+		this.firstY = firstY;
+		init();	
 	}
 }

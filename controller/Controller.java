@@ -34,6 +34,14 @@ public class Controller {
 			Cell cell = gameView.getCell((int)mineBtn.getClientProperty("x"), (int)mineBtn.getClientProperty("y"));
 			if(e.getButton() == MouseEvent.BUTTON1)
 			{
+				if(game.isFirstMove())
+				{
+					//game.setStartingTime(System.);
+					game.getMineField().setFirstLocation(cell.getXLocation(),cell.getYLocation());
+					gameView.setField(game.getMineField().getField());
+					gameView.addMineButtonsActionListener(new MineBtnActionListener());
+				}
+				
 				if(!game.isGameOver() && !game.isWin() && !cell.isLocked())
 				{
 					mineBtn.setVisible(false);

@@ -43,5 +43,9 @@ public class Game {
 	{
 		return win;
 	}
+
+	public boolean isFirstMove() {
+		return mineField.discoveredArea == 0;
+	}
 	
 }
