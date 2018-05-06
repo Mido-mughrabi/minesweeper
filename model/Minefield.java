@@ -140,4 +140,12 @@ public class Minefield {
 		}
 		return field[x][y];
 	}
+
+	public int[][] getField() {
+		return field;
+	}
+
+	public boolean[][] getVisibilityMask() {
+		return visibilityMask;
+	}
 }

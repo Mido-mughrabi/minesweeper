@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import controller.Controller;
 import model.Game;
 import model.Minefield;
 import view.GameView;
@@ -19,8 +20,9 @@ public class Main {
 			game.uncover(x, y);
 			game.getMineField().print();
 		}*/
-		
-		GameView gameView = new GameView(10,10);
+		Game game = new Game();
+		GameView gameView = new GameView(game.getMineField().getField());
+		Controller controller = new Controller(game, gameView);
 	}
 
 }

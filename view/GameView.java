@@ -1,39 +1,192 @@
 package view;
 
+import java.awt.Component;
 import java.awt.GridLayout;
-
-import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JTextField;
+
 
 public class GameView extends JFrame{
-	
-	JPanel mineField = new JPanel();
 	int n;
 	int m;
-	public GameView(int n, int m)
+	int[][] field;
+	JPanel mineFieldPnl = new JPanel();
+	Cell[][] cells;
+	JMenuBar menuBar = new JMenuBar();
+	JMenu gameMnu= new JMenu("Game");
+	JMenuItem newGameMnuItm = new JMenuItem("New game");
+	ButtonGroup group = new ButtonGroup();
+	JRadioButtonMenuItem easyOptionMnuItm = new JRadioButtonMenuItem("easy");
+	JRadioButtonMenuItem mediumOptionMnuItm = new JRadioButtonMenuItem("medium");
+	JRadioButtonMenuItem hardOptionMnuItm = new JRadioButtonMenuItem("hard");
+	JRadioButtonMenuItem customOptionMnuItm = new JRadioButtonMenuItem("custom");
+	JTextField customXTextField = new JTextField("10");
+	JTextField customYTextField = new JTextField("10");
+	JTextField customMinesTextField = new JTextField("10");
+	JMenuItem exitMnuItm;
+	
+	public GameView(int[][] field)
 	{
-		this.n = n;
-		this.m = m;
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setField(field);
 		refillMineField();
-		setContentPane(mineField);
+		//add the menus
+		initMenus();
+		//init JFrame
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		setContentPane(mineFieldPnl);
 		setSize(800,600);
 		setVisible(true);
 	}
 	
+	public void setField(int[][] field) {
+		this.field = field;
+		this.n = field.length;
+		this.m = field[0].length;
+		cells = new Cell[n][m];
+		
+		refillMineField();
+	}
+
+	private void initMenus() {
+		menuBar.add(gameMnu);
+		gameMnu.add(newGameMnuItm);
+		gameMnu.addSeparator();
+
+		easyOptionMnuItm.setSelected(true);
+		easyOptionMnuItm.setActionCommand("EASY");
+		group.add(easyOptionMnuItm);
+		gameMnu.add(easyOptionMnuItm);
+		
+		mediumOptionMnuItm.setActionCommand("MEDIUM");
+		group.add(mediumOptionMnuItm);
+		gameMnu.add(mediumOptionMnuItm);
+		
+		hardOptionMnuItm.setActionCommand("HARD");
+		group.add(hardOptionMnuItm);
+		gameMnu.add(hardOptionMnuItm);
+		
+		customOptionMnuItm.setActionCommand("CUSTOM");
+		group.add(customOptionMnuItm);
+		gameMnu.add(customOptionMnuItm);
+		
+		gameMnu.add(customXTextField);
+		gameMnu.add(customYTextField);
+		gameMnu.add(customMinesTextField);
+		
+		gameMnu.addSeparator();
+		exitMnuItm = new JMenuItem("Exit");
+		gameMnu.add(exitMnuItm);
+		setJMenuBar(menuBar);
+	}
+
 	public void refillMineField()
 	{
-		mineField.removeAll();
-		mineField.setLayout(new GridLayout(n, m));
+		mineFieldPnl.removeAll();
+		mineFieldPnl.setLayout(new GridLayout(n, m));
 		for(int i =0; i<n;i++)
 		{
 			for(int j =0; j<m;j++)
 			{
-				Cell c = new Cell(-1);
-				c.setVisible(true);
-				mineField.add(c);
+				cells[i][j] = new Cell(i,j,field[i][j]);
+				cells[i][j].setVisible(true);
+				mineFieldPnl.add(cells[i][j]);
+			}
+		}
+		mineFieldPnl.repaint();
+		mineFieldPnl.revalidate();
+	}
+
+	public void updateField(boolean[][] mask)
+	{
+		for(int i =0; i<n;i++)
+		{
+			for(int j =0; j<m;j++)
+			{
+				cells[i][j].fieldBtn.setVisible(!mask[i][j]);
 			}
 		}
 	}
+	
+	public Hardness getHardness()
+	{
+		return Hardness.valueOf(group.getSelection().getActionCommand().toUpperCase());
+	}
+	
+	public void addMineButtonsActionListener(MouseListener mineBtnActionListener) {
+		for(Component component: mineFieldPnl.getComponents())
+		{
+			if(component instanceof Cell)
+			{
+				Cell cell = (Cell) component;
+				cell.addBtnActionListener(mineBtnActionListener);
+			}
+		}
+		
+	}
+	
+	public void addNewGameMnuItmActionListener(ActionListener actionListener)
+	{
+		newGameMnuItm.addActionListener(actionListener);
+		easyOptionMnuItm.addActionListener(actionListener);
+		mediumOptionMnuItm.addActionListener(actionListener);
+		hardOptionMnuItm.addActionListener(actionListener);
+		customOptionMnuItm.addActionListener(actionListener);
+	}
+	
+	public void addExitMnuItmActionListener(ActionListener actionListener)
+	{
+		exitMnuItm.addActionListener(actionListener);
+	}
+
+	public int getCustomHardnessX() {
+		int result;
+		try
+		{
+			//height should be between 9 and 24
+			result = Math.max(9, Math.min(Integer.valueOf(customXTextField.getText()), 24));
+		}
+		catch (Exception e) {
+			result = 10;
+		}
+		return result;
+	}
+
+	public int getCustomHardnessY() {
+		int result;
+		try
+		{
+			//width should be between 9 and 30
+			result =  Math.max(9, Math.min(Integer.valueOf(customYTextField.getText()), 30));
+		}
+		catch(Exception e)
+		{
+			result = 10;
+		}
+		return result;
+	}
+
+	public int getCustomHardnessMines() {
+		int result;
+		int maxArea = getCustomHardnessX() * getCustomHardnessY();
+		try
+		{
+			//at least one mine, max all field is mines
+			result = Math.max(1, Math.min(Integer.valueOf(customMinesTextField.getText()), maxArea));;
+		}
+		catch(Exception e)
+		{
+			result = 10;
+		}
+		return result;
+	}
+	
 }
