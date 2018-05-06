@@ -18,6 +18,24 @@ public class Cell extends JPanel{
 	JLabel valueLbl = new JLabel();
 	JButton fieldBtn = new JButton();
 	int x, y;
+	boolean locked;
+	
+	public boolean isLocked() {
+		return locked;
+	}
+
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+		if(locked)
+		{
+			fieldBtn.setBackground(Color.red);;
+		}
+		else
+		{
+			fieldBtn.setBackground(null);
+		}
+	}
+
 	public Cell(int x, int y,int value)
 	{
 		this.x = x;
@@ -43,6 +61,14 @@ public class Cell extends JPanel{
 		valueLbl.add(fieldBtn);
 		add(valueLbl);
 		
+	}
+
+	public int getXLocation() {
+		return x;
+	}
+
+	public int getYLocation() {
+		return y;
 	}
 
 	public void addBtnActionListener(MouseListener mineBtnActionListener) {

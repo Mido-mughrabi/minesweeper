@@ -1,11 +1,13 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 import model.Game;
 import view.Cell;
@@ -29,28 +31,47 @@ public class Controller {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			JButton mineBtn = (JButton) e.getSource();
+			Cell cell = gameView.getCell((int)mineBtn.getClientProperty("x"), (int)mineBtn.getClientProperty("y"));
 			if(e.getButton() == MouseEvent.BUTTON1)
 			{
-				if(!game.isGameOver() && !game.isWin())
+				if(!game.isGameOver() && !game.isWin() && !cell.isLocked())
 				{
 					mineBtn.setVisible(false);
-					game.uncover((int)mineBtn.getClientProperty("x"),(int)mineBtn.getClientProperty("y"));
+					game.uncover(cell.getXLocation(),cell.getYLocation());
 					gameView.updateField(game.getMineField().getVisibilityMask());
 				}
 				
 				if(game.isWin())
 				{
-					System.out.println("you win");
+					int dialogResult = gameView.showWinDialog();
+					if (dialogResult == JOptionPane.YES_OPTION)
+					{
+						NewGameBtnActionListener newGame = new NewGameBtnActionListener();
+						newGame.actionPerformed(null);
+					}
+					else if(dialogResult == JOptionPane.NO_OPTION)
+					{
+						System.exit(0);
+					}
 				}
 				
 				if(game.isGameOver())
 				{
-					System.out.println("game over");
+					int dialogResult = gameView.showGameOverDialog();
+					if (dialogResult == JOptionPane.YES_OPTION)
+					{
+						NewGameBtnActionListener newGame = new NewGameBtnActionListener();
+						newGame.actionPerformed(null);
+					}
+					else if(dialogResult == JOptionPane.NO_OPTION)
+					{
+						System.exit(0);
+					}
 				}
 			}
 			else if(e.getButton() == MouseEvent.BUTTON3)
 			{
-				//toDo lock Cell at right click
+				cell.setLocked(!cell.isLocked());
 			}
 			
 		}

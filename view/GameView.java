@@ -5,10 +5,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
@@ -157,6 +159,7 @@ public class GameView extends JFrame{
 		catch (Exception e) {
 			result = 10;
 		}
+		customXTextField.setText(String.valueOf(result));
 		return result;
 	}
 
@@ -171,6 +174,7 @@ public class GameView extends JFrame{
 		{
 			result = 10;
 		}
+		customYTextField.setText(String.valueOf(result));
 		return result;
 	}
 
@@ -179,14 +183,29 @@ public class GameView extends JFrame{
 		int maxArea = getCustomHardnessX() * getCustomHardnessY();
 		try
 		{
-			//at least one mine, max all field is mines
-			result = Math.max(1, Math.min(Integer.valueOf(customMinesTextField.getText()), maxArea));;
+			//at least one mine, max 0.25 * field is mines
+			result = Math.max(1, Math.min(Integer.valueOf(customMinesTextField.getText()), maxArea/4));;
 		}
 		catch(Exception e)
 		{
 			result = 10;
 		}
+		customMinesTextField.setText(String.valueOf(result));
 		return result;
+	}
+
+	public Cell getCell(int x, int y) {
+		return cells[x][y];
+	}
+
+	public int showGameOverDialog() {
+		Object[] options = {"yes", "exit instead", "cancel"};
+		return JOptionPane.showOptionDialog(this, "game over\nplay again?","hard luck",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
+	}
+
+	public int showWinDialog() {
+		Object[] options = {"yes", "exit instead", "cancel"};
+		return JOptionPane.showOptionDialog(this, "you win\nplay again?","congratulations",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
 	}
 	
 }
