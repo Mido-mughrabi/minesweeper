@@ -3,7 +3,7 @@ package model;
 public class Game {
 	boolean gameOver;
 	boolean win;
-	
+	long startingTime;
 	Minefield mineField;
 	int maxArea ;
 	
@@ -46,6 +46,14 @@ public class Game {
 
 	public boolean isFirstMove() {
 		return mineField.discoveredArea == 0;
+	}
+
+	public void setStartingTime(long startingTime) {
+		this.startingTime = startingTime;	
+	}
+	
+	public long getStartingTime() {
+		return startingTime;
 	}
 	
 }

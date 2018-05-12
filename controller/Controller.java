@@ -16,6 +16,7 @@ import view.GameView;
 public class Controller {
 	Game game;
 	GameView gameView;
+	TimeCounter timeCounter = new TimeCounter();
 	public Controller(Game game, GameView gameView)
 	{
 		this.game = game;
@@ -36,10 +37,14 @@ public class Controller {
 			{
 				if(game.isFirstMove())
 				{
-					//game.setStartingTime(System.);
 					game.getMineField().setFirstLocation(cell.getXLocation(),cell.getYLocation());
 					gameView.setField(game.getMineField().getField());
 					gameView.addMineButtonsActionListener(new MineBtnActionListener());
+					//init the time counter
+					timeCounter = new TimeCounter();
+					game.setStartingTime(System.currentTimeMillis());
+					timeCounter.setCanCount(true);
+					timeCounter.start();
 				}
 				
 				if(!game.isGameOver() && !game.isWin() && !cell.isLocked())
@@ -51,11 +56,13 @@ public class Controller {
 				
 				if(game.isWin())
 				{
+					timeCounter.setCanCount(false);
 					int dialogResult = gameView.showWinDialog();
 					if (dialogResult == JOptionPane.YES_OPTION)
 					{
 						NewGameBtnActionListener newGame = new NewGameBtnActionListener();
 						newGame.actionPerformed(null);
+						gameView.updateTime(0);
 					}
 					else if(dialogResult == JOptionPane.NO_OPTION)
 					{
@@ -65,11 +72,13 @@ public class Controller {
 				
 				if(game.isGameOver())
 				{
+					timeCounter.setCanCount(false);
 					int dialogResult = gameView.showGameOverDialog();
 					if (dialogResult == JOptionPane.YES_OPTION)
 					{
 						NewGameBtnActionListener newGame = new NewGameBtnActionListener();
 						newGame.actionPerformed(null);
+						gameView.updateTime(0);
 					}
 					else if(dialogResult == JOptionPane.NO_OPTION)
 					{
@@ -155,8 +164,35 @@ public class Controller {
 			game = new Game(x,y,mines);
 			gameView.setField(game.getMineField().getField());
 			gameView.addMineButtonsActionListener(new MineBtnActionListener());
+			gameView.updateTime(0);
+			timeCounter.setCanCount(false);
 		}
 		
+	}
+
+	class TimeCounter extends Thread
+	{
+		boolean canCount;
+		
+		@Override
+		public void run() {
+			while(canCount)
+			{
+				try {
+					long currentTimeInGame = (System.currentTimeMillis()-game.getStartingTime())/1000;
+					gameView.updateTime(currentTimeInGame);
+					sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		public void setCanCount(boolean canCount)
+		{
+			this.canCount = canCount;
+		}
 	}
 }
 

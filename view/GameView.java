@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -34,6 +36,7 @@ public class GameView extends JFrame{
 	JTextField customYTextField = new JTextField("10");
 	JTextField customMinesTextField = new JTextField("10");
 	JMenuItem exitMnuItm;
+	JMenu timeMnu= new JMenu("Time: 0");
 	
 	public GameView(int[][] field)
 	{
@@ -60,6 +63,9 @@ public class GameView extends JFrame{
 
 	private void initMenus() {
 		menuBar.add(gameMnu);
+		menuBar.add(Box.createHorizontalGlue());
+		timeMnu.setEnabled(false);
+		menuBar.add(timeMnu);
 		gameMnu.add(newGameMnuItm);
 		gameMnu.addSeparator();
 
@@ -206,6 +212,10 @@ public class GameView extends JFrame{
 	public int showWinDialog() {
 		Object[] options = {"yes", "exit instead", "cancel"};
 		return JOptionPane.showOptionDialog(this, "you win\nplay again?","congratulations",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,options,options[0]);
+	}
+
+	public void updateTime(long currentTimeInGame) {
+		timeMnu.setText("Time: "+String.valueOf(currentTimeInGame));
 	}
 	
 }
