@@ -2,11 +2,14 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.EventListener;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -24,16 +27,27 @@ public class Cell extends JPanel{
 		return locked;
 	}
 
-	public void setLocked(boolean locked) {
-		this.locked = locked;
+	@Override
+	public void paint(Graphics g) {
+
 		if(locked)
 		{
-			fieldBtn.setBackground(Color.red);;
+			ImageIcon mineIcon = new ImageIcon(getClass().getResource("../resources/flag.ico"));
+			fieldBtn.setIcon(mineIcon);
+			fieldBtn.setBackground(new Color(255, 0, 17));
 		}
 		else
 		{
+			fieldBtn.setIcon(null);
 			fieldBtn.setBackground(null);
 		}
+		fieldBtn.repaint();
+		super.paint(g);
+	}
+	
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+		repaint();
 	}
 
 	public Cell(int x, int y,int value)
