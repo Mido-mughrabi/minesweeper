@@ -24,7 +24,7 @@ public class Minefield {
 	
 	public Minefield()
 	{
-		this(10,10,10);
+		this(9,9,10);
 	}
 	
 	private void init()

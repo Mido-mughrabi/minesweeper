@@ -134,13 +134,13 @@ public class Controller {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int x = 10;
-			int y = 10;
+			int x = 9;
+			int y = 9;
 			int mines = 10;
 			switch (gameView.getHardness()) {
 			case EASY:
-				x = 10;
-				y = 10;
+				x = 9;
+				y = 9;
 				mines = 10;
 				break;
 			case MEDIUM:

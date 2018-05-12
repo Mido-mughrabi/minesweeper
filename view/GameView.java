@@ -32,8 +32,8 @@ public class GameView extends JFrame{
 	JRadioButtonMenuItem mediumOptionMnuItm = new JRadioButtonMenuItem("medium");
 	JRadioButtonMenuItem hardOptionMnuItm = new JRadioButtonMenuItem("hard");
 	JRadioButtonMenuItem customOptionMnuItm = new JRadioButtonMenuItem("custom");
-	JTextField customXTextField = new JTextField("10");
-	JTextField customYTextField = new JTextField("10");
+	JTextField customXTextField = new JTextField("9");
+	JTextField customYTextField = new JTextField("9");
 	JTextField customMinesTextField = new JTextField("10");
 	JMenuItem exitMnuItm;
 	JMenu timeMnu= new JMenu("Time: 0");
@@ -163,7 +163,7 @@ public class GameView extends JFrame{
 			result = Math.max(9, Math.min(Integer.valueOf(customXTextField.getText()), 24));
 		}
 		catch (Exception e) {
-			result = 10;
+			result = 9;
 		}
 		customXTextField.setText(String.valueOf(result));
 		return result;
@@ -178,7 +178,7 @@ public class GameView extends JFrame{
 		}
 		catch(Exception e)
 		{
-			result = 10;
+			result = 9;
 		}
 		customYTextField.setText(String.valueOf(result));
 		return result;

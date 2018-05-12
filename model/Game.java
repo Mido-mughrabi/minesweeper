@@ -15,7 +15,7 @@ public class Game {
 	
 	public Game()
 	{
-		this(10,10,10);
+		this(9,9,10);
 	}
 	
 	public void uncover(int x, int y)
